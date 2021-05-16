@@ -1,11 +1,10 @@
 import pygame as pg
 import math
-W = 1000
-H = 1000
+W = 500
+H = 500
 pg.init()
 win = pg.display.set_mode((W, H))
 win.fill((255, 255, 255))
-pg.display.flip()
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
 hero_list = []
@@ -47,7 +46,6 @@ class Map():
             for x in range(len(self.map_matrix[0])):
                 if self.map_matrix[y][x] == 1:
                     pg.draw.rect(win, BLACK, (W//len(self.map_matrix[0])*x, H//len(self.map_matrix)*y, W//len(self.map_matrix[0]), H//len(self.map_matrix)))
-        pg.display.flip()
 
 
 class Hero():    
@@ -81,7 +79,6 @@ class Hero():
         if len(self.vision_list) != 0:
             for vision_point in self.vision_list:
                 pg.draw.line(win, BLUE, self.hero_crd, vision_point[0])
-        pg.display.flip()
 
 
 
@@ -118,32 +115,68 @@ class Wall():
 
 
 map1= Map('map.txt')
+map1.blit_2D()
 for blit_hero in hero_list:
     blit_hero.vision()
     blit_hero.vision()
     print(blit_hero.vision_list)
-while 1:        
+    blit_hero.blit_2D()
+
+clock = pg.time.Clock()
+while 'Основной цикл':        
     for event in pg.event.get():
         if event.type == pg.QUIT:                
             pg.quit()
             exit()
+    pg.display.flip()
 
+
+    #
     key = pg.key.get_pressed()
-    if key[pg.K_LEFT]:
-        for blit_hero in hero_list:
-            blit_hero.eye_angle-=1
-    elif key[pg.K_RIGHT]:
-        for blit_hero in hero_list:
-            blit_hero.eye_angle+=1
-
-
-            
-    map1.blit_2D()
     for blit_hero in hero_list:
+        if key[pg.K_LEFT]:
+            blit_hero.eye_angle-=1
+            blit_hero.vision()
+            
+            map1.blit_2D()
+            blit_hero.blit_2D()
+        elif key[pg.K_RIGHT]:
+            blit_hero.eye_angle+=1
+            blit_hero.vision()
+            
+            map1.blit_2D()
+            blit_hero.blit_2D()
+        if key[pg.K_a]:
+            blit_hero.hero_crd[0]-=1
+            blit_hero.vision()
+            
+            map1.blit_2D()
+            blit_hero.blit_2D()
+        elif key[pg.K_d]:
+            blit_hero.hero_crd[0]+=1
+            blit_hero.vision()
+            
+            map1.blit_2D()
+            blit_hero.blit_2D()
+        elif key[pg.K_w]:            
+            blit_hero.hero_crd[1]-=1
+            blit_hero.vision()
+            
+            map1.blit_2D()
+            blit_hero.blit_2D()
+        elif key[pg.K_s]:            
+            blit_hero.hero_crd[1]+=1
+            blit_hero.vision()
+            
+            map1.blit_2D()
+            blit_hero.blit_2D()
+        #blit_hero.blit_2D()
+        blit_hero.vision_list = []#только для отрисовки!
         
-        blit_hero.blit_2D()
-        blit_hero.vision_list = []
-        blit_hero.vision()
+    clock.tick(30)        
+   
+        
+        
     
 
 
